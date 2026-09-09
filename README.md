@@ -20,7 +20,7 @@
 * **NVIDIA 显卡驱动**（适用于 RTX 系列显卡）
 * **CUDA 工具包**
 * **Docker** 以及 **NVIDIA Container Toolkit**（确保容器可顺利调用 GPU）
-* **ROS 2 环境**（须与宿主机系统相匹配，例如 Ubuntu 20.04 推荐安装 ROS2 Foxy）
+* **ROS 2 环境**（须与宿主机系统相匹配，例如 Ubuntu 20.04对应ROS2 Foxy）
   * 详细文档：[ROS Foxy 安装指南](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html)
   * 推荐安装完整桌面版（`desktop-full`）
 
