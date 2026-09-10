@@ -93,7 +93,7 @@ docker run --gpus all -it --network host --device=/dev/video0:/dev/video0 --entr
 
 ### 4.1 启动 ROS2 节点
 
-在**容器内的终端**中，加载环境变量并启动深度相机节点：
+在**容器内的终端**中，加载环境变量并启动深度相机节点。请先在运行节点和接收程序的shell中退出conda环境(如果装有)，否则会导致卡顿。
 
 ```bash
 source /ros2_ws/install/setup.bash
@@ -119,3 +119,16 @@ ros2 run depth_camera depth_camera_node --ros-args \
 | `engine_fisheye_path` | `string` | - | 容器内生成的 `fisheye.engine` 文件绝对路径 |
 | `engine_pin_path` | `string` | - | 容器内生成的 `pin.engine` 文件绝对路径 |
 | `cam_path` | `string` | `/dev/video0` | 挂载到容器内的相机设备节点路径 |
+
+### 4.3 话题说明
+
+| 话题名称 | 详细说明 |
+| :--- | :--- |
+| `camera/left` | 左眼图像，根据undistort开关在鱼眼和去畸变图片间自动切换 |
+| `camera/right` | 右眼图像，同上 |
+| `camera/depth` | 深度图，同上，另外colormap为false时是原始深度数据，true时是转换后的彩色可视化图像 |
+| `camera/point_cloud` | 通过深度图重建的点云 |
+| `camera/left/fisheye/intrinsic` | 左眼鱼眼图像相机内参，只在启动时发布一次 |
+| `camera/right/fisheye/intrinsic` | 右眼鱼眼图像相机内参，只在启动时发布一次 |
+| `camera/left/pin/intrinsic` | 左眼去畸变图像相机内参，只在启动时发布一次 |
+| `camera/right/pin/intrinsic` | 右眼去畸变图像相机内参，只在启动时发布一次 |
