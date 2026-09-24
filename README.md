@@ -33,7 +33,7 @@
 在宿主机终端中执行命令导入镜像文件：
 
 ```bash
-docker load -i depth_camera_2.0.tar
+docker load -i depth_camera_4.0.tar
 ```
 
 ### 2.2 启动容器
@@ -41,11 +41,11 @@ docker load -i depth_camera_2.0.tar
 运行以下命令启动容器并映射设备：
 
 ```bash
-docker run --gpus all -it --network host --device=/dev/video0:/dev/video0 --entrypoint /bin/bash depth_camera:v2.0
+docker run --gpus all -it --network host --device=/dev/video0:/dev/video0 --entrypoint /bin/bash depth_camera:v4.0
 ```
 
 > **💡 注意：**
-> 请将 `--device=/dev/video0:/dev/video0` 中的 `/dev/video0` 修改为你宿主机上实际连接的相机设备路径。
+> 请将 `--device=/dev/video0:/dev/video0` 中的 `/dev/video0` 修改为你宿主机上实际连接的相机设备路径，如果有多个摄像头，每个摄像头使用一个单独的--device添加，例如--devece:=/dev/video2:/dev/video2。
 
 ---
 
@@ -104,7 +104,8 @@ ros2 run depth_camera depth_camera_node --ros-args \
   -p pointcloud:=false \
   -p engine_fisheye_path:=/root/fisheye.engine \
   -p engine_pin_path:=/root/pin.engine \
-  -p cam_path:=/dev/video0
+  -p cam_path:=/dev/video0 \
+  -r __ns:=/cam1
 ```
 
 > **提示：** 运行过程中按下 `Ctrl + C` 即可安全终止程序。
@@ -119,6 +120,7 @@ ros2 run depth_camera depth_camera_node --ros-args \
 | `engine_fisheye_path` | `string` | - | 容器内生成的 `fisheye.engine` 文件绝对路径 |
 | `engine_pin_path` | `string` | - | 容器内生成的 `pin.engine` 文件绝对路径 |
 | `cam_path` | `string` | `/dev/video0` | 挂载到容器内的相机设备节点路径 |
+| `__ns` | `string` | `无` | 用于区分多个节点的命名空间名称，当启动多个节点时需要这个参数，它会在所有话题和节点名称上面加入你指定的命名空间名称，例如指定/cam1，左眼图像话题变为/cam1/camera/left |
 
 ### 4.3 话题说明
 
