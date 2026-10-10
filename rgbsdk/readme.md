@@ -246,61 +246,7 @@ sdk.stop()
 
 ---
 
-## 五、完整示例
-
-```python
-import os
-import cv2
-import numpy as np
-import rgbsdk
-
-def main():
-    sdk = rgbsdk.RgbSDK()
-
-    # 开启去畸变，输出 640x480，焦距 500，向右转 10 度
-    sdk.start("/dev/video0",
-              undistort=True,
-              undistort_angle_h=10.0,
-              undistort_angle_v=0.0,
-              undistort_w=640,
-              undistort_h=480,
-              undistort_fxy=500.0)
-
-    out_dir = os.path.join(os.getcwd(), "demo_output")
-    os.makedirs(out_dir, exist_ok=True)
-
-    try:
-        n = 0
-        while n < 100:
-            if not sdk.grab():
-                print("SDK 已停止")
-                break
-
-            left  = sdk.retrieve_image(rgbsdk.IMAGE_PIN_LEFT)
-            right = sdk.retrieve_image(rgbsdk.IMAGE_PIN_RIGHT)
-
-            if left.size == 0 or right.size == 0:
-                print("空帧，跳过")
-                continue
-
-            print(f"frame {n}: left={left.shape}, right={right.shape}")
-            # 下游处理：cv2.imshow / cv2.imwrite / 神经网络推理 ...
-            cv2.imwrite(os.path.join(out_dir, f"left_{n:04d}.jpg"),  left)
-            cv2.imwrite(os.path.join(out_dir, f"right_{n:04d}.jpg"), right)
-
-            n += 1
-    finally:
-        sdk.stop()
-
-    print(f"图像已保存到: {out_dir}")
-
-if __name__ == "__main__":
-    main()
-```
-
----
-
-## 六、常见问题
+## 五、常见问题
 
 ### Q1. `ModuleNotFoundError: No module named 'rgbsdk'`
 
@@ -367,7 +313,7 @@ if __name__ == "__main__":
 
 ---
 
-## 七、性能参考
+## 六、性能参考
 
 单机（x86_64，8 核）实测，仅供参考：
 
@@ -380,7 +326,7 @@ if __name__ == "__main__":
 
 ---
 
-## 八、文件清单
+## 七、文件清单
 
 | 文件 | 说明 |
 |---|---|
