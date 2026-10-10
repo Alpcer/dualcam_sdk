@@ -10,6 +10,14 @@ sdk.start()
 # 或者显式指定：
 # sdk.start("/dev/video0", True, 0.0, 0.0, 600, 400, 414.18)
 
+K_left,  D_left  = sdk.get_intrinsics(rgbsdk.IMAGE_FISHEYE_LEFT)
+K_right, D_right = sdk.get_intrinsics(rgbsdk.IMAGE_FISHEYE_RIGHT)
+K_pin,   D_pin   = sdk.get_intrinsics(rgbsdk.IMAGE_PIN_LEFT)   # 左右共用
+
+print("Fisheye Left  K:\n", K_left,  "\nD:", D_left)
+print("Fisheye Right K:\n", K_right, "\nD:", D_right)
+print("Pinhole (L=R) K:\n", K_pin,   "\nD:", D_pin)
+
 # 在当前路径下创建输出文件夹
 out_dir = os.path.join(os.getcwd(), "demo_output")
 os.makedirs(out_dir, exist_ok=True)

@@ -183,6 +183,9 @@ sdk.start(cam_path="/dev/video0",
 - `undistort_fxy` 越大，视野越窄（放大），越小视野越宽（缩小）。
 - `undistort_angle_h/v` 相当于虚拟云台，用于调整去畸变后的朝向。
 
+> **提示**：`start()` 返回后即可调用 `get_intrinsics()` 读取当前生效的内参。
+> 若在 `start()` 之前调用，会得到未初始化的默认值（单位矩阵 / 零畸变）。
+
 ### 4.5 `sdk.grab()`
 
 **阻塞**等待左右目同帧就绪。返回 `bool`。
@@ -220,7 +223,17 @@ right = sdk.retrieve_image(rgbsdk.IMAGE_FISHEYE_RIGHT)
 
 返回值是**内部缓存的拷贝**，可以放心长期持有，不会随下一帧 `grab()` 被覆盖。
 
-### 4.7 `sdk.stop()`
+### 4.7 `sdk.get_intrinsics(image_type)`
+
+获取与 `retrieve_image(image_type)` 返回图像**一一对应**的内参，返回一个元组
+`(K, D)`，可直接喂给 `cv2.undistort` / `cv2.fisheye.undistortImage` /
+`cv2.stereoRectify` 等。
+
+```python
+K, D = sdk.get_intrinsics(rgbsdk.IMAGE_FISHEYE_LEFT)
+```
+
+### 4.8 `sdk.stop()`
 
 停止所有后台线程并释放资源。可在 `grab()` 阻塞期间从另一个线程调用，
 `grab()` 会立刻返回 `False`。
@@ -342,6 +355,15 @@ if __name__ == "__main__":
 - 目标文件夹不可写：确认 `demo_output/` 所在目录对当前用户有写权限；
 - 文件名含非法字符：默认文件名是 `left_N.jpg`，一般不会出问题；
 - 磁盘空间不足。
+
+### Q8. `get_intrinsics()` 返回单位矩阵 / 全 0 畸变？
+
+- 说明在 `start()` 之前调用了。`start()` 内部才会读相机 Flash 里的内参并
+  计算 ROI 裁剪、去畸变虚拟相机 K，请确保调用顺序是：
+  ```python
+  sdk = rgbsdk.RgbSDK()
+  sdk.start(...)                 # ← 先 start
+  K, D = sdk.get_intrinsics(...) # ← 再取内参
 
 ---
 
