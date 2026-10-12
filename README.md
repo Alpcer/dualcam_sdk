@@ -1,5 +1,8 @@
 # ROS2 Depth Camera (Docker Deployment Guide)
-<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=117427509723563&bvid=BV1Rpp96iEzM&cid=42680385793&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+
+https://github.com/user-attachments/assets/16d7a3c1-1d10-410a-b8da-b0ad07bc3276
+
+
 本仓库提供基于 Docker 容器部署的 ROS2 双目/深度相机节点安装与运行指南。
 
 ---
