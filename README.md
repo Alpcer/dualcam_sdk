@@ -1,6 +1,8 @@
 # ROS2 Depth Camera (Docker Deployment Guide)
-
+## 鱼眼效果
 https://github.com/user-attachments/assets/16d7a3c1-1d10-410a-b8da-b0ad07bc3276
+## 去畸变效果
+https://github.com/user-attachments/assets/98977d0e-e1d4-49c4-a9cf-5b831a099f22
 
 
 本仓库提供基于 Docker 容器部署的 ROS2 双目/深度相机节点安装与运行指南。
