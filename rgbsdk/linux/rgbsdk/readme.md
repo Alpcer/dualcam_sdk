@@ -1,4 +1,4 @@
-# RGBSDK — 双目 RGB 鱼眼相机采集与去畸变 SDK
+# RGBSDK — 双目 RGB 鱼眼相机采集与去畸变 SDK (Linux)
 
 本 SDK 提供一套 Python 接口，用于从 USB 双目 RGB 鱼眼相机采集图像，
 可选择输出**原始鱼眼图**或**去畸变（pinhole）图**，左右目同帧对齐。
@@ -13,13 +13,19 @@
 
 ```
 rgbsdk/
-├── demo.py                                       # 示例脚本
-├── readme.md                                     # 本文件
-├── rgbsdk.cpython-312-x86_64-linux-gnu.so        # Python 扩展模块
+├── demo.py                                          # 示例脚本
+├── readme.md                                        # 本文件
+├── rgbsdk.cpython-310-x86_64-linux-gnu.so           # Python 3.10 扩展模块
+├── rgbsdk.cpython-311-x86_64-linux-gnu.so           # Python 3.11 扩展模块
+├── rgbsdk.cpython-312-x86_64-linux-gnu.so           # Python 3.12 扩展模块
+├── rgbsdk.cpython-313-x86_64-linux-gnu.so           # Python 3.13 扩展模块
 └── libs/
-    └── libUSB_Camera_API.so                      # 相机底层私有库
+    └── libUSB_Camera_API.so                         # 相机底层私有库
 ```
 
+> **只需保留与你 Python 版本匹配的那一个 `.so`，其余可以删除。**
+> 当然，全部保留也不会有问题——Python 只会加载与自身版本匹配的那一个。
+>
 > 只要保持上述相对位置不变，整个文件夹可以任意拷贝到其它机器。
 
 运行 `demo.py` 后，会在**当前工作目录**下自动生成 `demo_output/` 用于保存示例图像：
@@ -32,7 +38,7 @@ rgbsdk/
 │   ├── left_2.jpg ...
 │   └── right_1.jpg ...
 ├── readme.md
-├── rgbsdk.cpython-312-x86_64-linux-gnu.so
+├── rgbsdk.cpython-3XX-x86_64-linux-gnu.so
 └── libs/
     └── libUSB_Camera_API.so
 ```
@@ -43,22 +49,33 @@ rgbsdk/
 
 ### 1. Python 版本（重要）
 
-本 SDK 的 `.so` 是**针对具体 Python 版本编译**的，文件名里的 `cpython-312`
-表示它**只能被 Python 3.12 加载**。
+本 SDK 的 `.so` 是**针对具体 Python 版本编译**的，文件名里的 `cpython-3XX`
+表示它**只能被对应版本的 Python 加载**。
 
-| 你的 Python | 能否 import |
+本发布包**同时提供以下四个版本**：
+
+| 你的 Python | 应加载的 `.so` 文件 |
 |---|---|
-| 3.12.x | ✅ 可以 |
-| 3.11.x、3.10.x、3.13.x | ❌ 不行 |
+| 3.10.x | `rgbsdk.cpython-310-x86_64-linux-gnu.so` |
+| 3.11.x | `rgbsdk.cpython-311-x86_64-linux-gnu.so` |
+| 3.12.x | `rgbsdk.cpython-312-x86_64-linux-gnu.so` |
+| 3.13.x | `rgbsdk.cpython-313-x86_64-linux-gnu.so` |
+
+**其它 Python 版本**（如 3.9、3.14）**暂不支持**。如有需要，请联系 SDK 提供方。
 
 检查当前 Python 版本：
 
 ```bash
 python3 --version
-# 期望输出：Python 3.12.x
 ```
 
-如果版本不符，请联系 SDK 提供方，提供适配你 Python 版本的发布包。
+**提示**：如果你的系统里同时装了多个 Python 版本，请用绝对路径调用
+与 `.so` 匹配的那个：
+
+```bash
+/usr/bin/python3.12 demo.py         # 用 3.12 跑
+/usr/bin/python3.11 demo.py         # 用 3.11 跑
+```
 
 ### 2. 系统依赖
 
@@ -74,6 +91,20 @@ sudo apt install -y \
 
 ```bash
 pip install opencv-python numpy
+```
+
+**关于 4 个 Python 版本的依赖**：不同 Python 版本运行 `demo.py` 时，
+**各自**需要一份 `opencv-python` 和 `numpy`。例如：
+
+```bash
+# 系统级（会同时影响所有 Python 3.x）
+sudo apt install python3-opencv python3-numpy
+
+# 或按版本分别装
+/usr/bin/python3.10 -m pip install --break-system-packages opencv-python numpy
+/usr/bin/python3.11 -m pip install --break-system-packages opencv-python numpy
+/usr/bin/python3.12 -m pip install --break-system-packages opencv-python numpy
+/usr/bin/python3.13 -m pip install --break-system-packages opencv-python numpy
 ```
 
 > **注意**：`libUSB_Camera_API.so` 及其下游依赖已经打包在 `libs/` 里，
@@ -105,6 +136,12 @@ sudo usermod -aG video $USER    # 重新登录后生效
 ```bash
 cd rgbsdk
 python3 demo.py
+```
+
+如果你的 `python3` 默认不是 3.10–3.13 中的某一个，请显式指定：
+
+```bash
+/usr/bin/python3.12 demo.py
 ```
 
 `demo.py` 会采集 10 帧原始鱼眼图，左右目分别保存到当前目录下的 `demo_output/`：
@@ -252,7 +289,8 @@ sdk.stop()
 
 - 确认你在 `rgbsdk/` 目录下运行 `python3 demo.py`；
 - 确认 `.so` 文件名中的 Python 版本与当前 `python3` 一致
-  （`rgbsdk.cpython-312-...so` ↔ `python3 --version` 输出 `3.12.x`）；
+  （例如 `rgbsdk.cpython-312-...so` ↔ `python3 --version` 输出 `3.12.x`）；
+- 本 SDK 支持 3.10 / 3.11 / 3.12 / 3.13，其它版本（3.9、3.14 等）不支持；
 - 如果从其它目录运行，可以临时加 `PYTHONPATH`：
   ```bash
   PYTHONPATH=/path/to/rgbsdk python3 /path/to/your_script.py
@@ -310,6 +348,27 @@ sdk.stop()
   sdk = rgbsdk.RgbSDK()
   sdk.start(...)                 # ← 先 start
   K, D = sdk.get_intrinsics(...) # ← 再取内参
+  ```
+
+### Q9. `pip install` 报 `externally-managed-environment`
+
+- Debian 12 / Ubuntu 23.04 及之后引入 PEP 668 保护，禁止 pip 直接写系统 Python。
+- 三种解决办法，任选一种：
+  - 用虚拟环境（推荐）：
+    ```bash
+    python3.12 -m venv ~/venv-rgbsdk
+    ~/venv-rgbsdk/bin/pip install opencv-python numpy
+    ~/venv-rgbsdk/bin/python demo.py
+    ```
+  - 用 `pipx`（适合装命令）
+  - 加 `--break-system-packages`：
+    ```bash
+    python3.12 -m pip install --break-system-packages opencv-python numpy
+    ```
+- 如果 pip 下载慢，可以换国内镜像源：
+  ```bash
+  pip install -i https://pypi.tuna.tsinghua.edu.cn/simple opencv-python numpy
+  ```
 
 ---
 
@@ -332,7 +391,10 @@ sdk.stop()
 |---|---|
 | `demo.py` | 示例脚本 |
 | `readme.md` | 本说明 |
+| `rgbsdk.cpython-310-x86_64-linux-gnu.so` | Python 扩展模块（Python 3.10 专用） |
+| `rgbsdk.cpython-311-x86_64-linux-gnu.so` | Python 扩展模块（Python 3.11 专用） |
 | `rgbsdk.cpython-312-x86_64-linux-gnu.so` | Python 扩展模块（Python 3.12 专用） |
+| `rgbsdk.cpython-313-x86_64-linux-gnu.so` | Python 扩展模块（Python 3.13 专用） |
 | `libs/libUSB_Camera_API.so` | 相机底层 API，`.so` 通过 `$ORIGIN/libs` 自动加载 |
 | `demo_output/` | 运行 `demo.py` 后自动生成的示例图像输出目录 |
 
@@ -340,7 +402,7 @@ sdk.stop()
 
 如有问题，请提供以下信息，便于排查：
 
-1. `python3 --version`
+1. `python3 --version` 或 `/usr/bin/python3.XX --version`
 2. `ls -l /dev/video*`
 3. `readelf -d rgbsdk*.so | grep -i runpath`
 4. `ldd rgbsdk*.so | grep "not found"`
