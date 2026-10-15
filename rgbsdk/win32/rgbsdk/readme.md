@@ -98,8 +98,7 @@ bits: 64
 python -m pip install opencv-python numpy
 ```
 
-如果 32 位环境装不上最新的 `opencv-python`（本 SDK 是 64 位，一般不会遇到），
-可以指定版本：
+如果装不上最新的 `opencv-python`，可以指定版本：
 
 ```cmd
 python -m pip install "opencv-python==4.5.5.64" numpy
