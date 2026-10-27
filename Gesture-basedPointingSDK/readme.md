@@ -2,6 +2,11 @@
 
 手势 3D 关键点与指向射线估计 SDK。
 
+## 识别的手指指向射线
+https://github.com/user-attachments/assets/2fe3423f-1aef-4267-98d9-ae25fb977f18
+## 同步显示背景点云
+https://github.com/user-attachments/assets/d5c96fa1-8e7b-4416-98bd-03f37ef7359f
+
 示例代码已提供在 `gesture_pointing_demo.py` 中。
 
 ## 📁 目录结构说明
